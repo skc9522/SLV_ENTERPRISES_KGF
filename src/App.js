@@ -11,11 +11,7 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaArrowUp,
-  FaStar,
-  FaCalendarAlt,
-  FaTrophy,
-  FaAward,
-  FaCheckCircle
+  FaStar
 } from 'react-icons/fa';
 import logo from './logo.svg';
 import './App.css';
@@ -741,9 +737,9 @@ function App() {
             <div className="footer-section">
               <h4>Connect With Us</h4>
               <div className="social-links">
-                <a href="#" className="social-link"><FaFacebook /></a>
-                <a href="#" className="social-link"><FaInstagram /></a>
-                <a href="#" className="social-link" onClick={openWhatsApp}><FaWhatsapp /></a>
+                <button className="social-link" onClick={() => window.open('https://facebook.com', '_blank')}><FaFacebook /></button>
+                <button className="social-link" onClick={() => window.open('https://instagram.com', '_blank')}><FaInstagram /></button>
+                <button className="social-link" onClick={openWhatsApp}><FaWhatsapp /></button>
               </div>
             </div>
           </div>

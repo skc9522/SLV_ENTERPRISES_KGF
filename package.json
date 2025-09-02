@@ -17,6 +17,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:prod": "CI=false react-scripts build",
+    "deploy": "npm run build && echo 'Build completed successfully! Ready for deployment.'",
+    "serve": "npx serve -s build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
