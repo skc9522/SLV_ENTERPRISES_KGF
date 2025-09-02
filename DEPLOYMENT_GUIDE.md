@@ -35,6 +35,30 @@ Your React app is now building successfully. Here's how to deploy it:
 3. **Init**: `firebase init hosting`
 4. **Deploy**: `firebase deploy`
 
+## 🗺️ SEO & Sitemap Generation
+
+Your app now includes automatic sitemap generation for better SEO:
+
+### Generate Sitemap
+```bash
+# Generate sitemap only
+npm run sitemap
+
+# Build + generate sitemap
+npm run build:sitemap
+```
+
+### What's Included
+- **sitemap.xml** - Automatically generated with all your website sections
+- **robots.txt** - Helps search engines find your sitemap
+- **SEO optimized** - All main sections properly indexed
+
+### Update Domain
+After deployment, update the domain in `generate-sitemap.js`:
+```javascript
+const siteUrl = 'https://your-actual-domain.com';
+```
+
 ## 🛠️ Local Testing
 
 Before deploying, test your build locally:
@@ -56,6 +80,8 @@ npx serve -s build
 2. **Fixed invalid href attributes** by converting social links to buttons
 3. **Cleaned up code** to eliminate ESLint warnings
 4. **Added deployment scripts** to package.json
+5. **Added sitemap generation** for SEO optimization
+6. **Created robots.txt** for search engine crawling
 
 ## 🔧 Build Commands
 
@@ -71,16 +97,24 @@ npm run deploy
 
 # Local testing
 npm run serve
+
+# Generate sitemap
+npm run sitemap
+
+# Build + sitemap
+npm run build:sitemap
 ```
 
 ## 🌐 Deployment Checklist
 
 - [ ] App builds successfully (`npm run build`)
 - [ ] App runs locally (`npm run serve`)
+- [ ] Sitemap generated (`npm run sitemap`)
 - [ ] All images load correctly
 - [ ] All links work properly
 - [ ] Responsive design works on mobile
 - [ ] Contact form functions (if backend is set up)
+- [ ] Update domain in `generate-sitemap.js`
 
 ## 📱 Mobile Optimization
 
@@ -97,6 +131,7 @@ To customize before deployment:
 2. **Add real images** to replace placeholders
 3. **Update contact information** if needed
 4. **Modify color scheme** in `src/App.css`
+5. **Update domain** in `generate-sitemap.js`
 
 ## 🚨 Common Issues & Solutions
 
@@ -118,6 +153,11 @@ npm run build
 - Ensure all CSS classes are defined
 - Test on different browsers
 
+### Sitemap Issues
+- Ensure `sitemap` package is installed
+- Check that `public/` folder exists
+- Update domain URL in `generate-sitemap.js`
+
 ## 📞 Support
 
 If you encounter any issues:
@@ -130,9 +170,11 @@ If you encounter any issues:
 
 1. **Choose a deployment platform** from the options above
 2. **Test your build locally** with `npm run serve`
-3. **Deploy to your chosen platform**
-4. **Share your live app URL!**
+3. **Generate sitemap** with `npm run sitemap`
+4. **Deploy to your chosen platform**
+5. **Update domain** in sitemap generator
+6. **Share your live app URL!**
 
 ---
 
-**Your SLV Enterprises app is now ready for deployment! 🚀**
+**Your SLV Enterprises app is now ready for deployment with SEO optimization! 🚀**
