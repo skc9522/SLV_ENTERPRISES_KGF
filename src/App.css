@@ -792,6 +792,32 @@ body {
   box-shadow: 0 20px 40px rgba(211, 47, 47, 0.4);
 }
 
+.contact-form button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.contact-form-status {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.contact-form-status--success {
+  background: rgba(46, 125, 50, 0.12);
+  color: #1b5e20;
+  border: 1px solid rgba(46, 125, 50, 0.25);
+}
+
+.contact-form-status--error {
+  background: rgba(211, 47, 47, 0.1);
+  color: #b71c1c;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+}
+
 /* Footer */
 .footer {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);

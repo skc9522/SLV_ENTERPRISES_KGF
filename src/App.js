@@ -19,6 +19,8 @@ import './App.css';
 function App() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [contactFormStatus, setContactFormStatus] = useState(null);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
 
   // Scroll to top functionality
   const toggleVisibility = () => {
@@ -701,16 +703,85 @@ function App() {
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setContactFormStatus(null);
+                  setContactSubmitting(true);
+                  const form = e.currentTarget;
+                  try {
+                    const body = new URLSearchParams(new FormData(form)).toString();
+                    const res = await fetch('/', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                      body,
+                    });
+                    if (!res.ok) throw new Error('Send failed');
+                    setContactFormStatus({
+                      type: 'success',
+                      message:
+                        'Form submitted successfully. Please wait — our team will contact you shortly.',
+                    });
+                    form.reset();
+                  } catch {
+                    setContactFormStatus({
+                      type: 'error',
+                      message:
+                        'Submission failed. Please try again in a moment, or reach us by phone or email.',
+                    });
+                  } finally {
+                    setContactSubmitting(false);
+                  }
+                }}
+              >
                 <input type="hidden" name="form-name" value="contact" />
                 <div style={{ display: 'none' }}>
-                  <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                  <label>
+                    Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
+                  </label>
                 </div>
-                <input type="text" name="name" placeholder="Your Name" required />
-                <input type="email" name="email" placeholder="Your Email" required />
-                <input type="tel" name="phone" placeholder="Your Phone" />
-                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                <button type="submit">Send Message</button>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  required
+                  disabled={contactSubmitting}
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  required
+                  disabled={contactSubmitting}
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Your Phone"
+                  disabled={contactSubmitting}
+                />
+                <textarea
+                  name="message"
+                  placeholder="Your Message"
+                  rows="5"
+                  required
+                  disabled={contactSubmitting}
+                />
+                {contactFormStatus && (
+                  <p
+                    className={`contact-form-status contact-form-status--${contactFormStatus.type}`}
+                    role="alert"
+                  >
+                    {contactFormStatus.message}
+                  </p>
+                )}
+                <button type="submit" disabled={contactSubmitting}>
+                  {contactSubmitting ? 'Sending…' : 'Send Message'}
+                </button>
               </form>
             </motion.div>
           </div>
