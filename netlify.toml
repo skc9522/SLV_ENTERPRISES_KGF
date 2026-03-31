@@ -1,0 +1,4 @@
+# Netlify build (production) + hints for `netlify dev`
+[build]
+  command = "npm run build"
+  publish = "build"

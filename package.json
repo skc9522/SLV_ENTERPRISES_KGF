@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev:netlify": "npx netlify dev",
     "build": "react-scripts build",
     "build:prod": "CI=false react-scripts build",
     "deploy": "npm run build && echo 'Build completed successfully! Ready for deployment.'",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { 
   FaTruck, 
@@ -19,9 +20,24 @@ import './App.css';
 function App() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [contactFormStatus, setContactFormStatus] = useState(null);
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactPopup, setContactPopup] = useState(null);
+
+  const closeContactPopup = () => setContactPopup(null);
+
+  useEffect(() => {
+    if (!contactPopup) return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setContactPopup(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [contactPopup]);
 
   // Scroll to top functionality
   const toggleVisibility = () => {
@@ -37,36 +53,6 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-  };
-
-  const handleContactSubmit = async (event) => {
-    event.preventDefault();
-    setContactSubmitting(true);
-    setContactFormStatus(null);
-
-    const form = event.target;
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Accept': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData),
-      });
-
-      if (response.ok) {
-        setContactFormStatus({ type: 'success', message: 'Form submitted successfully. We will contact you soon.' });
-        alert('Form submitted successfully. Thank you!');
-        form.reset();
-      } else {
-        throw new Error('Submit failed');
-      }
-    } catch (err) {
-      setContactFormStatus({ type: 'error', message: 'Submission failed. Please try again.' });
-      alert('Submission failed. Please try again.');
-    } finally {
-      setContactSubmitting(false);
-    }
   };
 
   useEffect(() => {
@@ -741,7 +727,6 @@ function App() {
                 netlify-honeypot="bot-field"
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  setContactFormStatus(null);
                   setContactSubmitting(true);
                   const form = e.currentTarget;
                   try {
@@ -752,20 +737,14 @@ function App() {
                       body,
                     });
                     if (!res.ok) throw new Error('Send failed');
-                    const successMessage = 'Form submitted successfully. Please wait — our team will contact you shortly.';
-                    setContactFormStatus({
-                      type: 'success',
-                      message: successMessage,
-                    });
-                    setContactPopup({type: 'success', text: successMessage});
+                    const successMessage =
+                      'Form submitted successfully. Please wait — our team will contact you shortly.';
+                    setContactPopup({ type: 'success', text: successMessage });
                     form.reset();
-                  } catch (error) {
-                    const errorMessage = 'Submission failed. Please try again in a moment, or reach us by phone or email.';
-                    setContactFormStatus({
-                      type: 'error',
-                      message: errorMessage,
-                    });
-                    setContactPopup({type: 'error', text: errorMessage});
+                  } catch {
+                    const errorMessage =
+                      'Submission failed. Please try again in a moment, or reach us by phone or email.';
+                    setContactPopup({ type: 'error', text: errorMessage });
                   } finally {
                     setContactSubmitting(false);
                   }
@@ -804,28 +783,9 @@ function App() {
                   required
                   disabled={contactSubmitting}
                 />
-                {contactFormStatus && (
-                  <p
-                    className={`contact-form-status contact-form-status--${contactFormStatus.type}`}
-                    role="alert"
-                  >
-                    {contactFormStatus.message}
-                  </p>
-                )}
                 <button type="submit" disabled={contactSubmitting}>
                   {contactSubmitting ? 'Sending…' : 'Send Message'}
                 </button>
-
-                {contactPopup && (
-                  <div className="contact-popup-overlay" onClick={() => setContactPopup(null)}>
-                    <div className="contact-popup" onClick={(e) => e.stopPropagation()}>
-                      <p>{contactPopup.text}</p>
-                      <button type="button" onClick={() => setContactPopup(null)}>
-                        OK
-                      </button>
-                    </div>
-                  </div>
-                )}
               </form>
             </motion.div>
           </div>
@@ -912,6 +872,35 @@ function App() {
           </div>
         </motion.div>
       )}
+
+      {contactPopup &&
+        createPortal(
+          <div
+            className="contact-popup-overlay"
+            role="presentation"
+            onClick={closeContactPopup}
+          >
+            <div
+              className={`contact-popup contact-popup--${contactPopup.type}`}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="contact-popup-title"
+              aria-describedby="contact-popup-desc"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 id="contact-popup-title" className="contact-popup-title">
+                {contactPopup.type === 'success' ? 'Success' : 'Submission failed'}
+              </h3>
+              <p id="contact-popup-desc" className="contact-popup-message">
+                {contactPopup.text}
+              </p>
+              <button type="button" className="contact-popup-ok" onClick={closeContactPopup}>
+                OK
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

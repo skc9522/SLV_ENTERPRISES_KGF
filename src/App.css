@@ -833,31 +833,59 @@ body {
 
 .contact-popup {
   background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-  width: min(90vw, 380px);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  width: min(90vw, 400px);
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.contact-popup p {
-  margin: 0 0 16px;
+.contact-popup-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.contact-popup--success .contact-popup-title {
+  color: #1b5e20;
+}
+
+.contact-popup--error .contact-popup-title {
+  color: #c62828;
+}
+
+.contact-popup-message {
+  margin: 0 0 1.35rem;
   font-size: 1rem;
-  color: #222;
+  line-height: 1.55;
+  color: #444;
 }
 
-.contact-popup button {
+.contact-popup-ok {
   border: none;
-  background: #ff4d4f;
+  background: linear-gradient(135deg, #d32f2f 0%, #ff6b6b 100%);
   color: #fff;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 0.85rem 2.25rem;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 8px 24px rgba(211, 47, 47, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.contact-popup button:hover {
-  background: #d9363e;
+.contact-popup-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(211, 47, 47, 0.45);
+}
+
+.contact-popup-ok:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.35), 0 8px 24px rgba(211, 47, 47, 0.35);
 }
 
 /* Footer */
