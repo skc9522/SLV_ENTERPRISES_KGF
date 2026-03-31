@@ -21,6 +21,7 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [contactFormStatus, setContactFormStatus] = useState(null);
   const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactPopup, setContactPopup] = useState(null);
 
   // Scroll to top functionality
   const toggleVisibility = () => {
@@ -36,6 +37,36 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
+  };
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    setContactSubmitting(true);
+    setContactFormStatus(null);
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Accept': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData),
+      });
+
+      if (response.ok) {
+        setContactFormStatus({ type: 'success', message: 'Form submitted successfully. We will contact you soon.' });
+        alert('Form submitted successfully. Thank you!');
+        form.reset();
+      } else {
+        throw new Error('Submit failed');
+      }
+    } catch (err) {
+      setContactFormStatus({ type: 'error', message: 'Submission failed. Please try again.' });
+      alert('Submission failed. Please try again.');
+    } finally {
+      setContactSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -721,18 +752,20 @@ function App() {
                       body,
                     });
                     if (!res.ok) throw new Error('Send failed');
+                    const successMessage = 'Form submitted successfully. Please wait — our team will contact you shortly.';
                     setContactFormStatus({
                       type: 'success',
-                      message:
-                        'Form submitted successfully. Please wait — our team will contact you shortly.',
+                      message: successMessage,
                     });
+                    setContactPopup({type: 'success', text: successMessage});
                     form.reset();
-                  } catch {
+                  } catch (error) {
+                    const errorMessage = 'Submission failed. Please try again in a moment, or reach us by phone or email.';
                     setContactFormStatus({
                       type: 'error',
-                      message:
-                        'Submission failed. Please try again in a moment, or reach us by phone or email.',
+                      message: errorMessage,
                     });
+                    setContactPopup({type: 'error', text: errorMessage});
                   } finally {
                     setContactSubmitting(false);
                   }
@@ -782,6 +815,17 @@ function App() {
                 <button type="submit" disabled={contactSubmitting}>
                   {contactSubmitting ? 'Sending…' : 'Send Message'}
                 </button>
+
+                {contactPopup && (
+                  <div className="contact-popup-overlay" onClick={() => setContactPopup(null)}>
+                    <div className="contact-popup" onClick={(e) => e.stopPropagation()}>
+                      <p>{contactPopup.text}</p>
+                      <button type="button" onClick={() => setContactPopup(null)}>
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                )}
               </form>
             </motion.div>
           </div>

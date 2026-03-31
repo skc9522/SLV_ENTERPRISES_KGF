@@ -1,0 +1,38 @@
+Redeployment Steps for SLV Enterprises KGF
+
+1. Save code changes
+   - Ensure your React app changes are committed (especially contact form updates in src/App.js).
+
+2. Confirm form should post to Netlify
+   - Form snippet must contain:
+     <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">...
+   - Hidden input: <input type="hidden" name="form-name" value="contact" />
+
+3. Git commit + push
+   - git add .
+   - git commit -m "Netlify contact form + popup status"
+   - git push origin main
+
+4. Automatic deploy (Netlify Git integration)
+   - In Netlify dashboard, open the site.
+   - Check Deploys tab for successful new deploy.
+   - If no auto deploy, click "Trigger deploy" > "Deploy site".
+
+5. Validate on live site
+   - Visit production URL and open /#contact.
+   - Submit form once with test data.
+   - Confirm success alert or message appears.
+
+6. Verify in Netlify Forms + notifications
+   - Dashboard > Forms > contact.
+   - See the new entry.
+   - Configure form notification: email to slventerprises.kgf1@gmail.com.
+
+7. Optional: redirect and SPA handling
+   - public/_redirects should include:
+     /* /index.html 200
+
+8. If any issue appears
+   - Check Deploy logs for build errors.
+   - Ensure API route is not required (static Netlify form handles it).
+   - Re-test after fixing and re-pushing.
