@@ -3,12 +3,12 @@
   "name": "SLV Enterprises - KGF",
   "icons": [
     {
-      "src": "main-logo.png",
+      "src": "logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "main-logo.png",
+      "src": "logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }

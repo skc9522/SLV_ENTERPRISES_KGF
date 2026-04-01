@@ -14,7 +14,7 @@ import {
   FaBars,
   FaTimes,
 } from 'react-icons/fa';
-import logo from './assets/Main_logo.png';
+import logo from './assets/SLV_logo.jpg';
 import logoFooter from './assets/SLV_LOGO_Black_BG-8.png';
 import { NAV_ITEMS, SERVICES, brands, testimonials, timeline, galleryImages } from './data/content';
 import './App.css';
