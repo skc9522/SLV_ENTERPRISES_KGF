@@ -14,12 +14,62 @@ import {
   FaArrowUp,
   FaStar
 } from 'react-icons/fa';
-import logo from './logo.svg';
+import logo from './assets/SLV_logo.jpg';
+import logoFooter from './assets/SLV_LOGO_Black_BG-8.png';
 import './App.css';
+
+function easeOutCubic(t) {
+  return 1 - (1 - t) ** 3;
+}
+
+const HERO_STATS_CONFIG = [
+  { target: 9, suffix: '+', label: 'Years of Excellence' },
+  { target: 2, suffix: '', label: 'Districts Covered' },
+  { target: 400, suffix: '+', label: 'Retailers Served' },
+  { target: 18, suffix: '+', label: 'Premium Brands' },
+];
+
+function HeroStatCard({ target, suffix, label, start, delay }) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!start) return undefined;
+    let cancelled = false;
+    let raf = 0;
+    const timeoutId = setTimeout(() => {
+      const duration = 2200;
+      const t0 = performance.now();
+      const tick = (now) => {
+        if (cancelled) return;
+        const elapsed = now - t0;
+        const p = Math.min(elapsed / duration, 1);
+        setDisplay(Math.round(easeOutCubic(p) * target));
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    }, delay);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+      cancelAnimationFrame(raf);
+    };
+  }, [start, target, delay]);
+
+  return (
+    <div className="hero-stat-card">
+      <span className="hero-stat-number">
+        {display}
+        {suffix}
+      </span>
+      <span className="hero-stat-label">{label}</span>
+    </div>
+  );
+}
 
 function App() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [heroCountersStart, setHeroCountersStart] = useState(false);
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactPopup, setContactPopup] = useState(null);
 
@@ -60,6 +110,11 @@ function App() {
     return () => {
       window.removeEventListener('scroll', toggleVisibility);
     };
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroCountersStart(true), 550);
+    return () => clearTimeout(t);
   }, []);
 
   const brands = [
@@ -150,20 +205,20 @@ function App() {
       text: "SLV Enterprises has been our trusted partner for over 5 years. Their reliable delivery and quality products have helped us grow our business significantly."
     },
     {
-      name: "Priya Sharma",
+      name: "Priya ",
       role: "Store Owner, Robertsonpet",
       rating: 5,
       text: "Excellent service and support from SLV Enterprises. They understand our needs and always deliver on time. Highly recommended!"
     },
     {
-      name: "Mohan Singh",
-      role: "Supermarket Owner, Kolar",
+      name: "Ranjith",
+      role:  "Distributor, Chikkabalapura",
       rating: 5,
       text: "The best distribution partner we've worked with. Their extensive brand portfolio and professional approach make them stand out."
     },
     {
-      name: "Anita Patel",
-      role: "Retailer, Chikkabalapura",
+      name: "Suresh",
+      role: "Supermarket Owner, Bangarpet",
       rating: 5,
       text: "SLV Enterprises has transformed our business with their wide range of products and exceptional customer service."
     }
@@ -259,8 +314,7 @@ function App() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <img src={logo} alt="SLV Enterprises Logo" className="nav-logo-img" />
-            <span className="logo-text">SLV Enterprises</span>
+            <img src={logo} alt="SLV Enterprises" className="nav-logo-img" />
           </motion.div>
           <div className="nav-links">
             <a href="#home">Home</a>
@@ -288,31 +342,26 @@ function App() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
+            className="hero-subtitle"
           >
             Your Trusted Partner in Distribution & Super Stockist Services
           </motion.p>
-          <motion.div 
+          <motion.div
             className="hero-stats"
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.75, delay: 0.55 }}
           >
-            <div className="stat">
-              <span className="stat-number">9+</span>
-              <span className="stat-label">Years of Excellence</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">2</span>
-              <span className="stat-label">Districts Covered</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">400+</span>
-              <span className="stat-label">Retailers Served</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">18+</span>
-              <span className="stat-label">Premium Brands</span>
-            </div>
+            {HERO_STATS_CONFIG.map((s, i) => (
+              <HeroStatCard
+                key={s.label}
+                target={s.target}
+                suffix={s.suffix}
+                label={s.label}
+                start={heroCountersStart}
+                delay={i * 140}
+              />
+            ))}
           </motion.div>
         </div>
         <div className="hero-image">
@@ -326,14 +375,17 @@ function App() {
       {/* About Section */}
       <section id="about" className="about">
         <div className="container">
-          <motion.h2 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            About SLV Enterprises
-          </motion.h2>
+          <div className="about-heading-wrap">
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              About SLV Enterprises
+            </motion.h2>
+            <span className="about-subline" aria-hidden="true" />
+          </div>
           <div className="about-content">
             <motion.div 
               className="about-text"
@@ -342,7 +394,7 @@ function App() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <p>
+              <p className="about-lead">
                 Founded by <strong>Sunil Kumar V</strong>, SLV Enterprises has been serving as a premier distributor 
                 for KGF and KGF rural areas for over 9 years. We take pride in being a super stockist for 
                 Kolar and Chikkabalapura Districts, ensuring quality products reach every corner of these regions.
@@ -360,7 +412,7 @@ function App() {
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <div className="image-placeholder">
+              <div className="image-placeholder about-image-card">
                 <FaUsers size={60} />
                 <p>Team Photo Here</p>
               </div>
@@ -393,6 +445,12 @@ function App() {
                 <p>Sunil Kumar V</p>
                 <span>Founder & Proprietor</span>
               </div>
+              <div className="founder-quote founder-quote--below-photo">
+                <blockquote>
+                  &ldquo;Our success lies in building strong relationships with our partners and ensuring
+                  quality products reach every retailer in our network.&rdquo;
+                </blockquote>
+              </div>
             </motion.div>
             <motion.div 
               className="founder-details"
@@ -403,20 +461,6 @@ function App() {
             >
               <h3>Sunil Kumar V</h3>
               <p className="founder-title">Founder & Proprietor</p>
-              <div className="founder-achievements">
-                <div className="achievement-item">
-                  <span className="achievement-number">9+</span>
-                  <span className="achievement-text">Years of Excellence</span>
-                </div>
-                <div className="achievement-item">
-                  <span className="achievement-number">2</span>
-                  <span className="achievement-text">Districts Covered</span>
-                </div>
-                <div className="achievement-item">
-                  <span className="achievement-number">400+</span>
-                  <span className="achievement-text">Retailers Network</span>
-                </div>
-              </div>
               <div className="founder-description">
                 <p>
                   With over 9 years of dedicated service in the distribution industry, Sunil Kumar V has 
@@ -430,12 +474,6 @@ function App() {
                   opportunities across multiple taluks. His commitment to excellence and customer 
                   satisfaction continues to drive the company's growth and success.
                 </p>
-              </div>
-              <div className="founder-quote">
-                <blockquote>
-                  "Our success lies in building strong relationships with our partners and ensuring 
-                  quality products reach every retailer in our network."
-                </blockquote>
               </div>
             </motion.div>
           </div>
@@ -688,7 +726,9 @@ function App() {
               viewport={{ once: true }}
             >
               <div className="contact-item">
-                <FaMapMarkerAlt className="contact-icon" />
+                <span className="contact-icon" aria-hidden="true">
+                  <FaMapMarkerAlt />
+                </span>
                 <div>
                   <h4>Address</h4>
                   <p>SLV Enterprises<br />
@@ -698,7 +738,9 @@ function App() {
                 </div>
               </div>
               <div className="contact-item">
-                <FaPhone className="contact-icon" />
+                <span className="contact-icon" aria-hidden="true">
+                  <FaPhone />
+                </span>
                 <div>
                   <h4>Phone</h4>
                   <p>+91 7019637432</p>
@@ -706,7 +748,9 @@ function App() {
                 </div>
               </div>
               <div className="contact-item">
-                <FaEnvelope className="contact-icon" />
+                <span className="contact-icon" aria-hidden="true">
+                  <FaEnvelope />
+                </span>
                 <div>
                   <h4>Email</h4>
                   <p>slventerprises.kgf1@gmail.com</p>
@@ -798,8 +842,7 @@ function App() {
           <div className="footer-content">
             <div className="footer-section">
               <div className="footer-logo">
-                <img src={logo} alt="SLV Enterprises Logo" className="footer-logo-img" />
-                <span>SLV Enterprises</span>
+                <img src={logoFooter} alt="SLV Enterprises" className="footer-logo-img" />
               </div>
               <p>Your trusted partner in distribution and super stockist services across Kolar and Chikkabalapura districts.</p>
             </div>
