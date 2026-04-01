@@ -37,13 +37,14 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   </head>
   <body>
-    <!-- Netlify scans this at deploy so the "contact" form is registered (CRA bundle has no form in index.html). -->
-    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+    <!-- Netlify parses this HTML at build/deploy to register the "contact" form (must match fields in App.js). -->
+    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />
       <textarea name="message"></textarea>
-      <input name="bot-field" />
+      <input type="text" name="bot-field" />
     </form>
     <noscript>you need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>

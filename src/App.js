@@ -127,11 +127,12 @@ function App() {
     setContactSubmitting(true);
     const form = e.currentTarget;
     try {
-      const body = new URLSearchParams(new FormData(form)).toString();
-      const res = await fetch('/', {
+      const params = new URLSearchParams(new FormData(form));
+      const action = form.getAttribute('action') || '/';
+      const res = await fetch(action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body,
+        body: params.toString(),
       });
       if (!res.ok) throw new Error('Send failed');
       setContactPopup({
@@ -444,8 +445,9 @@ function App() {
               <form
                 name="contact"
                 method="POST"
+                action="/"
                 data-netlify="true"
-                netlify-honeypot="bot-field"
+                data-netlify-honeypot="bot-field"
                 onSubmit={handleContactSubmit}
               >
                 <input type="hidden" name="form-name" value="contact" />
